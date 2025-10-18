@@ -1,4 +1,5 @@
 #include "display_manager.h"
+#include "display_manager_img.h"
 
 DisplayManager::DisplayManager() {
 }
@@ -11,7 +12,7 @@ void DisplayManager::setupDisplay() {
     M5.Lcd.setRotation(3);
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(WHITE);
-    M5.Lcd.setTextSize(1);
+    M5.Lcd.setTextSize(2);
 }
 
 void DisplayManager::clearScreen() {
@@ -23,29 +24,10 @@ void DisplayManager::setDefaultTextProperties() {
     M5.Lcd.setTextSize(1);
 }
 
-void DisplayManager::showSendMode(bool hasSignal, const IRSignal& signal) {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
-    
-    M5.Lcd.println("=== SEND MODE ===");
-    M5.Lcd.println();
-    M5.Lcd.println("A: Send signal");
-    M5.Lcd.println("B: Register mode");
-    M5.Lcd.println("Serial: TV_OFF cmd");
-    M5.Lcd.println();
-    
-    if (hasSignal) {
-        M5.Lcd.setTextColor(GREEN);
-        M5.Lcd.println("Signal registered!");
-        M5.Lcd.printf("Protocol: %s\n", typeToString(signal.protocol).c_str());
-        M5.Lcd.printf("Bits: %d\n", signal.bits);
-        M5.Lcd.setTextColor(WHITE);
-    } else {
-        M5.Lcd.setTextColor(RED);
-        M5.Lcd.println("No signal registered");
-        M5.Lcd.setTextColor(WHITE);
-    }
+void DisplayManager::showImage(uint16_t* img) {
+    M5.Lcd.startWrite();
+    M5.Lcd.pushImage(0, 0, 240, 135, img); // 画像表示
+    M5.Lcd.endWrite();
 }
 
 void DisplayManager::showRegisterMode(int registerCount) {

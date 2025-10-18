@@ -2,6 +2,7 @@
 #include "config.h"
 #include "ir_controller.h"
 #include "display_manager.h"
+#include "display_manager_img.h"
 #include "button_handler.h"
 
 // グローバルオブジェクト
@@ -12,6 +13,7 @@ ButtonHandler buttonHandler;
 // プログラムの状態
 Mode currentMode = SEND_MODE;
 TVstatus currentTVstatus = TV_OFF;
+Oton currentOtonStatus = AWAKE;
 
 // 関数の前方宣言
 void updateDisplay();
@@ -37,19 +39,33 @@ void toggleMode() {
 void toggleTVstatus() {
   if (currentTVstatus == TV_OFF) {
     currentTVstatus = TV_ON;
-    displayManager.showMessage("TV is now ON", 1500);
+    setOtonStatus(AWAKE);
   } else {
     currentTVstatus = TV_OFF;
-    displayManager.showMessage("TV is now OFF", 1500);
   }
+  Serial.print("TV status changed to: ");
+  Serial.println(currentTVstatus == TV_ON ? "ON" : "OFF");
+  updateDisplay();
+}
+
+void setOtonStatus(Oton status) {
+  currentOtonStatus = status;
   updateDisplay();
 }
 
 void updateDisplay() {
-  if (currentMode == SEND_MODE) {
-    displayManager.showSendMode(irController.isSignalRegistered(), irController.getRegisteredSignal());
-  } else {
+  if (currentMode == REGISTER_MODE) {
     displayManager.showRegisterMode(irController.getRegisterCount());
+    return;
+  }
+  if( currentTVstatus == TV_OFF) {
+    displayManager.showImage((uint16_t*)imgOff);
+    return;
+  }
+  if (currentOtonStatus == SLEEP) {
+    displayManager.showImage((uint16_t*)imgSleep);
+  } else {
+    displayManager.showImage((uint16_t*)imgAwake);
   }
 }
 
@@ -95,9 +111,15 @@ void handleSerialCommand() {
     }
     Serial.println("OFF command received - sending IR signal");
     handleSendSignal();
+    toggleTVstatus();
+    Serial.println("TV turned OFF");
   } else if (command == "ALERT") {
     Serial.println("ALERT command received - sending IR signal");
-    // アラート画像を表示
+    setOtonStatus(SLEEP);
+  } else if(command == "AWAKE") {
+    Serial.println("AWAKE command received - sending IR signal");
+    setOtonStatus(AWAKE);
+
   } else {
     Serial.printf("Unknown command: '%s'\n", command.c_str());
     Serial.println("Send 'HELP' for available commands");
@@ -109,6 +131,7 @@ void handleSendModeMonitoring() {
   if (irController.checkForRegisteredSignal()) {
     // 登録済み信号を受信した場合の処理
     toggleTVstatus();
+    Serial.println("Registered signal detected - toggled TV status");
   }
 }
 
@@ -143,6 +166,7 @@ void loop() {
   if (buttonHandler.isButtonAPressed()) {
     if (currentMode == SEND_MODE) {
       toggleTVstatus();
+      Serial.println("A button pressed - sending registered signal");
     }
   }
   

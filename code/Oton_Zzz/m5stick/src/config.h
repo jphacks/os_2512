@@ -31,6 +31,11 @@ enum TVstatus {
   TV_ON
 };
 
+enum Oton {
+  SLEEP,
+  AWAKE
+};
+
 // 信号保存用の構造体
 struct IRSignal {
   decode_type_t protocol;
