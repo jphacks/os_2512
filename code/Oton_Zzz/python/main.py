@@ -124,7 +124,7 @@ class SleepDetector:
 def main():
     """メイン処理"""
     # シリアル通信の初期化
-    ser = Serialize_controler()
+    ser = Serialize_controler(port="COM8")
 
     # 睡眠検出器の初期化
     detector = SleepDetector(
@@ -174,28 +174,28 @@ def main():
 
             gauge_value, is_stage1, is_stage2, status = detector.process_result()
 
-            # --- M5Stickへの2段階通知処理 ---
-            if is_stage1 and not notified_stage1:
-                print(f"[{time.ctime()}] STAGE 1 DETECTED! Sending pre-signal to M5Stick...")
-                notified_stage1 = True
-
-                # シリアル送信処理
-                ser.send_to_m5("ALERT")
-
-            if is_stage2 and not notified_stage2:
-                print(f"[{time.ctime()}] STAGE 2 CONFIRMED! Sending final signal to M5Stick...")
-                notified_stage2 = True
-
-                # シリアル送信処理
+            # 顔未検出時は即OFFを送信（status が "No Face"）
+            if status == "No Face":
+                print(f"[{time.ctime()}] No face detected. Sending OFF to M5Stick...")
                 ser.send_to_m5("OFF")
+                time.sleep(1.0)  # 少し待機してから次へ
+            else:
+                # --- M5Stickへの2段階通知処理 ---
+                if is_stage1 and not notified_stage1:
+                    print(f"[{time.ctime()}] STAGE 1 DETECTED! Sending pre-signal to M5Stick...")
+                    notified_stage1 = True
+                    ser.send_to_m5("ALERT")
 
-            if not is_stage1 and (notified_stage1 or notified_stage2):
-                print(f"[{time.ctime()}] User woke up. Resetting all notifications.")
-                notified_stage1 = False
-                notified_stage2 = False
+                if is_stage2 and not notified_stage2:
+                    print(f"[{time.ctime()}] STAGE 2 CONFIRMED! Sending final signal to M5Stick...")
+                    notified_stage2 = True
+                    ser.send_to_m5("OFF")
 
-                # シリアル送信処理
-                ser.send_to_m5("AWAKE")
+                if not is_stage1 and (notified_stage1 or notified_stage2):
+                    print(f"[{time.ctime()}] User woke up. Resetting all notifications.")
+                    notified_stage1 = False
+                    notified_stage2 = False
+                    ser.send_to_m5("AWAKE")
 
             # --- デバッグ用ウィンドウ表示 ---
             color = (0, 255, 0)
