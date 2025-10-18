@@ -194,6 +194,9 @@ def main():
                 notified_stage1 = False
                 notified_stage2 = False
 
+                # シリアル送信処理
+                ser.send_to_m5("AWAKE")
+
             # --- デバッグ用ウィンドウ表示 ---
             color = (0, 255, 0)
             if "Confirmed" in status: color = (0, 0, 255)
