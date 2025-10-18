@@ -7,6 +7,10 @@ mp4 を OpenCV (cv2) でループ再生する簡単なスクリプト。
 キー操作:
     0 : 黒画面に切り替え（TVの電源OFF状態）
     1 : チャンネル1に切り替え
+    2 : チャンネル2に切り替え
+    3 : チャンネル3に切り替え
+    4 : チャンネル4に切り替え
+    5 : チャンネル5に切り替え
     q, ESC : 終了
     p, SPACE: 一時停止/再生
     f : フルスクリーン切替
@@ -33,19 +37,39 @@ except Exception as e:
     raise
 
 
-def loop_play(video_path: str, speed: float = 1.0, window_name: str = "Video", fullscreen: bool = False):
-    if not os.path.isfile(video_path):
-        raise FileNotFoundError(f"指定されたファイルが見つかりません: {video_path}")
+# -----------------
+# Configuration: set channels here (edit to your file paths)
+# keys: channel numbers (1..5)
+# value: file path (str) or None for black screen
+# Example:
+# CHANNELS = {1: r"videos/video1.mp4", 2: r"videos/video2.mp4", 3: None, 4: None, 5: None}
+# START_CHANNEL: initial channel number to select on start
+# -----------------
+CHANNELS = {
+    1: r"videos/video1.mp4",
+    2: None,
+    3: None,
+    4: None,
+    5: None,
+}
 
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        raise RuntimeError(f"ビデオを開けませんでした: {video_path}")
+START_CHANNEL = 1
 
-    # 元のフレームレートを取得。取得できなければ 30 fps を想定
-    fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
-    # waitKey の間隔（ms）を計算
+
+def loop_play(channels: dict, start_channel: int = 1, speed: float = 1.0, window_name: str = "Video", fullscreen: bool = False):
+    """Play among multiple channels.
+
+    channels: dict mapping channel number (int) -> file path (str) or None for empty/black.
+    start_channel: the initial channel number to select.
+    """
+    # validate channels
+    if not isinstance(channels, dict) or len(channels) == 0:
+        raise ValueError("channels must be a non-empty dict mapping channel numbers to file paths or None")
+
+    # playback timing defaults
     if speed <= 0:
         speed = 1.0
+    fps = 30.0
     delay_ms = max(1, int(1000.0 / (fps * speed)))
 
     paused = False
@@ -63,10 +87,54 @@ def loop_play(video_path: str, speed: float = 1.0, window_name: str = "Video", f
     mode = 'video'
     last_frame = None
     black_frame = None
+    cap = None
+    current_channel = start_channel
+
+    def open_channel(ch_num: int):
+        nonlocal cap, fps, delay_ms, last_frame, black_frame, mode
+        # close previous capture
+        if cap is not None:
+            try:
+                cap.release()
+            except Exception:
+                pass
+            cap = None
+
+        path = channels.get(ch_num)
+        if path:
+            # try open file
+            try:
+                new_cap = cv2.VideoCapture(path)
+                if not new_cap.isOpened():
+                    sys.stderr.write(f"Warning: cannot open channel {ch_num} file: {path}\n")
+                    mode = 'black'
+                    return
+                cap = new_cap
+                # update fps/delay based on opened file
+                fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+                delay_ms = max(1, int(1000.0 / (fps * speed)))
+                last_frame = None
+                black_frame = None
+                mode = 'video'
+            except Exception as e:
+                sys.stderr.write(f"Warning: failed to open channel {ch_num}: {e}\n")
+                cap = None
+                mode = 'black'
+        else:
+            # channel is empty (black)
+            cap = None
+            mode = 'black'
+
+    # open initial channel
+    if start_channel not in channels:
+        # pick first available channel
+        start_channel = sorted(channels.keys())[0]
+    current_channel = start_channel
+    open_channel(current_channel)
 
     while True:
         # 通常再生モードかつ再生中であればフレームを進める
-        if mode == 'video' and not paused:
+        if mode == 'video' and not paused and cap is not None:
             ret, frame = cap.read()
             if not ret:
                 # ファイルの終端に達したら先頭に戻す
@@ -83,8 +151,12 @@ def loop_play(video_path: str, speed: float = 1.0, window_name: str = "Video", f
             if mode == 'black':
                 if black_frame is None:
                     # 動画の解像度が取得できなければデフォルトを使う
-                    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) or 640
-                    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) or 480
+                    w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) if cap is not None else 640
+                    h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) if cap is not None else 480
+                    if not w:
+                        w = 640
+                    if not h:
+                        h = 480
                     black_frame = np.zeros((h, w, 3), dtype='uint8')
                 display = black_frame
             else:
@@ -94,8 +166,12 @@ def loop_play(video_path: str, speed: float = 1.0, window_name: str = "Video", f
                 else:
                     # まだフレームがない場合は黒画面を表示
                     if black_frame is None:
-                        w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) or 640
-                        h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) or 480
+                        w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) if cap is not None else 640
+                        h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) if cap is not None else 480
+                        if not w:
+                            w = 640
+                        if not h:
+                            h = 480
                         black_frame = np.zeros((h, w, 3), dtype='uint8')
                     display = black_frame
 
@@ -115,10 +191,19 @@ def loop_play(video_path: str, speed: float = 1.0, window_name: str = "Video", f
             else:
                 # 元に戻す
                 cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_NORMAL)
-        elif key == ord('1'):
-            mode = 'video'
         elif key == ord('0'):
-            mode = 'black'
+            # 0 は黒画面モード（電源OFF）とのトグル切替
+            if mode == 'black':
+                # 黒画面から元のチャンネル表示へ戻す
+                # open_channel がファイルを開けなければ自動で black に切り替わる
+                open_channel(current_channel)
+            else:
+                mode = 'black'
+        elif key in (ord('1'), ord('2'), ord('3'), ord('4'), ord('5')):
+            sel = int(chr(key))
+            if sel in channels:
+                current_channel = sel
+                open_channel(current_channel)
 
     cap.release()
     cv2.destroyAllWindows()
@@ -146,16 +231,16 @@ def main():
     # Example: START_FULLSCREEN = True
 
     # determine effective file and fullscreen setting
-    file_to_play = VIDEO_PATH if VIDEO_PATH else args.file
-    if not file_to_play:
-        sys.stderr.write("Error: video file must be provided either by VIDEO_PATH variable or as a CLI argument.\n")
-        parser.print_help()
-        sys.exit(2)
+    # file_to_play = VIDEO_PATH if VIDEO_PATH else args.file
+    # if not file_to_play:
+    #     sys.stderr.write("Error: video file must be provided either by VIDEO_PATH variable or as a CLI argument.\n")
+    #     parser.print_help()
+    #     sys.exit(2)
 
     fullscreen = START_FULLSCREEN if (START_FULLSCREEN is not None) else args.fullscreen
 
     try:
-        loop_play(file_to_play, speed=args.speed, window_name=args.window, fullscreen=fullscreen)
+        loop_play(CHANNELS, speed=args.speed, window_name=args.window, fullscreen=fullscreen)
     except Exception as e:
         sys.stderr.write(f"Error: {e}\n")
         sys.exit(1)
