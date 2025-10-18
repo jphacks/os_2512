@@ -51,8 +51,8 @@ except Exception as e:
 CHANNELS = {
     1: r"videos/video1.mp4",
     2: r"videos/video2.mp4",
-    3: None,
-    4: None,
+    3: r"videos/video3.mp4",
+    4: r"videos/video4.mp4",
     5: None,
 }
 
