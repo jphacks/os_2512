@@ -70,23 +70,6 @@ public:
   const char* getProtocolName() const { return protocolName; }
 };
 
-// ★★★ NECプロトコルのボタン定義（コメントアウト） ★★★
-// IRButton necButtons[] = {
-//   IRButton("TV_POWER", 0x11A00FF, 0xA0),
-//   IRButton("CH_1",   0x11A807F, 0xA8),
-//   IRButton("CH_2",   0x11A6897, 0xA6),
-//   IRButton("CH_3",   0x11AD22D, 0xAD),
-//   IRButton("CH_4",   0x11A52AD, 0xA5),
-//   IRButton("CH_5",   0x11A5AA5, 0xA5),
-//   IRButton("CH_6",   0x11A28D7, 0xA2),
-//   IRButton("CH_7",   0x11AE817, 0xAE),
-//   IRButton("CH_8",   0x11ACA35, 0xAC),
-//   IRButton("CH_9",   0x11AD02F, 0xAD),
-//   IRButton("CH_10",   0x11A4AB5, 0xA4),
-//   IRButton("CH_11",   0x11A0AF5, 0xA0),
-//   IRButton("CH_12",   0x11A8A75, 0xA8)
-// };
-// IRProtocol necProtocol("NEC", 0x11, necButtons, 13);
 
 // ★★★ PANASONICプロトコルのボタン定義 ★★★
 IRButton panasonicButtons[] = {
