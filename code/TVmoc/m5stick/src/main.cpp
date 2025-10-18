@@ -74,21 +74,21 @@ public:
 IRButton necButtons[] = {
   IRButton("TV_POWER", 0x11A00FF, 0xA0),
   IRButton("CH_1",   0x11A807F, 0xA8),
-  IRButton("CH_2",   0x11AD22D, 0xAD),
-  IRButton("CH_3",   0x11A52AD, 0xA5),
-  IRButton("CH_4",   0x11A5AA5, 0xA5),
-  IRButton("CH_5",   0x11A28D7, 0xA2),
-  // IRButton("CH_6",   0x11A????, 0xA?)  // 配列に追加するだけ
-  // IRButton("CH_7",   0x11A????, 0xA?)  // 配列に追加するだけ
-  // IRButton("CH_8",   0x11A????, 0xA?)  // 配列に追加するだけ
-  // IRButton("CH_9",   0x11A????, 0xA?)  // 配列に追加するだけ
-  // IRButton("CH_10",   0x11A????, 0xA?)  // 配列に追加するだけ
-  // IRButton("CH_11",   0x11A????, 0xA?)  // 配列に追加するだけ
-  // IRButton("CH_12",   0x11A????, 0xA?)  // 配列に追加するだけ
+  IRButton("CH_2",   0x11A6897, 0xA6),
+  IRButton("CH_3",   0x11AD22D, 0xAD),
+  IRButton("CH_4",   0x11A52AD, 0xA5),
+  IRButton("CH_5",   0x11A5AA5, 0xA5),
+  IRButton("CH_6",   0x11A28D7, 0xA2),
+  IRButton("CH_7",   0x11AE817, 0xAE),
+  IRButton("CH_8",   0x11ACA35, 0xAC),
+  IRButton("CH_9",   0x11AD02F, 0xAD),
+  IRButton("CH_10",   0x11A4AB5, 0xA4),
+  IRButton("CH_11",   0x11A0AF5, 0xA0),
+  IRButton("CH_12",   0x11A8A75, 0xA8)
 };
 
 // NECプロトコルオブジェクト
-IRProtocol necProtocol("NEC", 0x11, necButtons, 6);
+IRProtocol necProtocol("NEC", 0x11, necButtons, 13);
 
 const bool FILTER_ENABLED = true;  // trueにすると特定の信号のみ検出
 
@@ -109,14 +109,8 @@ void setup() {
 
 // ★★★ ボタン識別用の関数（プロトコルクラスを使用） ★★★
 String identifyButton(uint64_t value, uint8_t command) {
-  // まずValueで検索
+  // Value値で検索
   const char* buttonName = necProtocol.findButtonByValue(value);
-  if (buttonName != nullptr) {
-    return String(buttonName);
-  }
-
-  // Valueで見つからない場合、Commandで検索
-  buttonName = necProtocol.findButtonByCommand(command);
   if (buttonName != nullptr) {
     return String(buttonName);
   }
@@ -128,32 +122,16 @@ void loop() {
   // 赤外線信号を受信した場合
   if (irrecv.decode(&results)) {
 
-    // ★★★ クラスを使用した2段階フィルタ ★★★
+    // ★★★ 完全なValue値でフィルタリング ★★★
     if (FILTER_ENABLED) {
-      bool isMatch = false;
-
-      // 1. まずアドレスとコマンドで判定（両方が0でない場合のみ有効）
-      if (results.address != 0 && results.command != 0) {
-        if (necProtocol.matchButton(results.address, results.command)) {
-          isMatch = true;
-        }
-      }
-
-      // 2. アドレス&コマンドで判定できなかった場合、Value全体で判定
-      if (!isMatch) {
-        if (necProtocol.matchButtonByValue(results.value)) {
-          isMatch = true;
-        }
-      }
-
-      // 3. どちらにも一致しなければ無視
-      if (!isMatch) {
+      // Value値が登録されているボタンと一致するかチェック
+      if (!necProtocol.matchButtonByValue(results.value)) {
         irrecv.resume();  // 次の信号を受信準備
-        return;  // 対象外の信号は無視
+        return;  // 登録されていない信号は無視
       }
     }
 
-    // ボタンを識別
+    // ボタンを識別（Value値で検索）
     String buttonName = identifyButton(results.value, results.command);
 
     // ★★★ PCへ送信するシンプルなテキストメッセージ ★★★
