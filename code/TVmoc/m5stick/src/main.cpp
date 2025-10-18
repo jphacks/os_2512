@@ -72,7 +72,7 @@ public:
 
 // ★★★ NECプロトコルのボタン定義 ★★★
 IRButton necButtons[] = {
-  IRButton("TV_OFF", 0x11A00FF, 0xA0),
+  IRButton("TV_POWER", 0x11A00FF, 0xA0),
   IRButton("CH_1",   0x11A807F, 0xA8),
   IRButton("CH_2",   0x11AD22D, 0xAD),
   IRButton("CH_3",   0x11A52AD, 0xA5),
