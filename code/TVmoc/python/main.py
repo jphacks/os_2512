@@ -29,6 +29,9 @@ import time
 import os
 import numpy as np
 
+sys.path.append('../..')
+from utils import serial_comm
+
 try:
     import cv2
 except Exception as e:
@@ -55,6 +58,8 @@ CHANNELS = {
 
 START_CHANNEL = 1
 
+# シリアル通信用インスタンス生成
+ser = serial_comm.Serialize_controler(port="COM8")
 
 def loop_play(channels: dict, start_channel: int = 1, speed: float = 1.0, window_name: str = "Video", fullscreen: bool = False):
     """Play among multiple channels.
@@ -177,6 +182,33 @@ def loop_play(channels: dict, start_channel: int = 1, speed: float = 1.0, window
 
         # 表示
         cv2.imshow(window_name, display)
+        # print(ser.receive_from_m5())
+        # tv_str = ser.receive_from_m5()
+
+        # serial からの入力を一度だけ受け取る
+        try:
+            tv_str = ser.receive_from_m5()
+        except Exception:
+            tv_str = None
+
+        if tv_str:
+            tv_str = tv_str.strip()
+            # TV_POWER -> 0 キーと同等（黒画面トグル）
+            if tv_str == "TV_POWER":
+                if mode == 'black':
+                    open_channel(current_channel)
+                else:
+                    mode = 'black'
+            # CH_1..CH_5 -> チャンネル切替
+            elif tv_str.startswith("CH_"):
+                try:
+                    sel = int(tv_str.split("_", 1)[1])
+                except Exception:
+                    sel = None
+                if sel and sel in channels:
+                    if sel != current_channel:
+                        current_channel = sel
+                        open_channel(current_channel)
 
         key = cv2.waitKey(delay_ms) & 0xFF
         if key == ord('q') or key == 27:
@@ -202,8 +234,9 @@ def loop_play(channels: dict, start_channel: int = 1, speed: float = 1.0, window
         elif key in (ord('1'), ord('2'), ord('3'), ord('4'), ord('5')):
             sel = int(chr(key))
             if sel in channels:
-                current_channel = sel
-                open_channel(current_channel)
+                if sel != current_channel:
+                    current_channel = sel
+                    open_channel(current_channel)
 
     cap.release()
     cv2.destroyAllWindows()
