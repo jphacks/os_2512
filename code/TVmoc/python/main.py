@@ -53,7 +53,14 @@ CHANNELS = {
     2: r"videos/video2.mp4",
     3: r"videos/video3.mp4",
     4: r"videos/video4.mp4",
-    5: None,
+    5: r"videos/video5.mp4",
+    6: r"videos/video6.mp4",
+    7: r"videos/video7.mp4",
+    8: None,
+    9: None,
+    10: None,
+    11: None,
+    12: None,
 }
 
 START_CHANNEL = 1
@@ -231,7 +238,7 @@ def loop_play(channels: dict, start_channel: int = 1, speed: float = 1.0, window
                 open_channel(current_channel)
             else:
                 mode = 'black'
-        elif key in (ord('1'), ord('2'), ord('3'), ord('4'), ord('5')):
+        elif key in (ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7')):
             sel = int(chr(key))
             if sel in channels:
                 if sel != current_channel:
