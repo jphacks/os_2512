@@ -26,6 +26,11 @@ enum Mode {
   REGISTER_MODE   // 登録モード
 };
 
+enum TVstatus {
+  TV_OFF,
+  TV_ON
+};
+
 // 信号保存用の構造体
 struct IRSignal {
   decode_type_t protocol;

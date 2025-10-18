@@ -11,6 +11,7 @@ ButtonHandler buttonHandler;
 
 // プログラムの状態
 Mode currentMode = SEND_MODE;
+TVstatus currentTVstatus = TV_OFF;
 
 // 関数の前方宣言
 void updateDisplay();
@@ -33,10 +34,20 @@ void toggleMode() {
   updateDisplay();
 }
 
+void toggleTVstatus() {
+  if (currentTVstatus == TV_OFF) {
+    currentTVstatus = TV_ON;
+    displayManager.showMessage("TV is now ON", 1500);
+  } else {
+    currentTVstatus = TV_OFF;
+    displayManager.showMessage("TV is now OFF", 1500);
+  }
+  updateDisplay();
+}
+
 void updateDisplay() {
   if (currentMode == SEND_MODE) {
-    displayManager.showSendMode(irController.isSignalRegistered(), 
-                               irController.getRegisteredSignal());
+    displayManager.showSendMode(irController.isSignalRegistered(), irController.getRegisteredSignal());
   } else {
     displayManager.showRegisterMode(irController.getRegisterCount());
   }
@@ -71,33 +82,25 @@ void handleRegisterMode() {
 }
 
 void handleSerialCommand() {
-  if (Serial.available()) {
-    String command = Serial.readStringUntil('\n');
-    command.trim();  // 前後の空白や改行を削除
-    
-    Serial.printf("Received command: '%s'\n", command.c_str());
-    
-    if (command == "TV_OFF") {
-      Serial.println("TV_OFF command received - sending IR signal");
-      if (currentMode == SEND_MODE) {
-        handleSendSignal();
-      } else {
-        Serial.println("Currently in register mode - ignoring TV_OFF command");
-      }
-    } else if (command == "STATUS") {
-      // ステータス確認コマンド
-      Serial.printf("Mode: %s\n", (currentMode == SEND_MODE) ? "SEND" : "REGISTER");
-      Serial.printf("Signal registered: %s\n", irController.isSignalRegistered() ? "YES" : "NO");
-    } else if (command == "HELP") {
-      // ヘルプ表示
-      Serial.println("Available commands:");
-      Serial.println("  TV_OFF - Send registered IR signal");
-      Serial.println("  STATUS - Show current status");
-      Serial.println("  HELP   - Show this help");
-    } else {
-      Serial.printf("Unknown command: '%s'\n", command.c_str());
-      Serial.println("Send 'HELP' for available commands");
+  if (!Serial.available() || currentMode != SEND_MODE) {
+    return;
+  }
+  String command = Serial.readStringUntil('\n');
+  command.trim();  // 前後の空白や改行を削除
+  Serial.printf("Received command: '%s'\n", command.c_str());
+  if (command == "OFF") {
+    if (currentTVstatus == TV_OFF) {
+      Serial.println("TV is already OFF");
+      return;
     }
+    Serial.println("OFF command received - sending IR signal");
+    handleSendSignal();
+  } else if (command == "ALERT") {
+    Serial.println("ALERT command received - sending IR signal");
+    // アラート画像を表示
+  } else {
+    Serial.printf("Unknown command: '%s'\n", command.c_str());
+    Serial.println("Send 'HELP' for available commands");
   }
 }
 
@@ -105,8 +108,7 @@ void handleSendModeMonitoring() {
   // 送信モード時に登録済み信号を監視
   if (irController.checkForRegisteredSignal()) {
     // 登録済み信号を受信した場合の処理
-    displayManager.showMessage("Signal detected!", 1500);
-    updateDisplay();
+    toggleTVstatus();
   }
 }
 
@@ -140,7 +142,7 @@ void loop() {
   // Aボタン：登録された信号を送信（ボタンでも送信可能）
   if (buttonHandler.isButtonAPressed()) {
     if (currentMode == SEND_MODE) {
-      handleSendSignal();
+      toggleTVstatus();
     }
   }
   
