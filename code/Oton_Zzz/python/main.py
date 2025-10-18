@@ -3,6 +3,11 @@ import cv2
 import time
 import mediapipe as mp
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../utils"))
+from serial_comm import Serialize_controler
+
 class SleepDetector:
     """
     「睡眠ゲージ」方式を使った睡眠検出クラス
@@ -118,6 +123,8 @@ class SleepDetector:
 
 def main():
     """メイン処理"""
+    # シリアル通信の初期化
+    ser = Serialize_controler()
 
     # 睡眠検出器の初期化
     detector = SleepDetector(
@@ -172,13 +179,15 @@ def main():
                 print(f"[{time.ctime()}] STAGE 1 DETECTED! Sending pre-signal to M5Stick...")
                 notified_stage1 = True
 
-                # シリアル送信処理（未実装）
+                # シリアル送信処理
+                ser.send_to_m5("ALERT")
 
             if is_stage2 and not notified_stage2:
                 print(f"[{time.ctime()}] STAGE 2 CONFIRMED! Sending final signal to M5Stick...")
                 notified_stage2 = True
 
-                # シリアル送信処理（未実装）
+                # シリアル送信処理
+                ser.send_to_m5("OFF")
 
             if not is_stage1 and (notified_stage1 or notified_stage2):
                 print(f"[{time.ctime()}] User woke up. Resetting all notifications.")
