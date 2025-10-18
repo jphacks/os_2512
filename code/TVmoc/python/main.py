@@ -47,7 +47,7 @@ except Exception as e:
 # -----------------
 CHANNELS = {
     1: r"videos/video1.mp4",
-    2: None,
+    2: r"videos/video2.mp4",
     3: None,
     4: None,
     5: None,
@@ -223,7 +223,7 @@ def main():
     # playback without CLI args. If VIDEO_PATH is None, the CLI positional 'file'
     # will be used and is required. If START_FULLSCREEN is None, the CLI
     # --fullscreen flag is used.
-    VIDEO_PATH = "videos/video1.mp4"
+    # VIDEO_PATH = "videos/video1.mp4"
     # Example to set defaults in-script (uncomment and edit):
     # VIDEO_PATH = r".\videos\video1.mp4"
 
