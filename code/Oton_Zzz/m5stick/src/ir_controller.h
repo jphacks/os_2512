@@ -40,6 +40,9 @@ public:
     // 信号送信
     bool sendRegisteredSignal();
     
+    // 送信モード時の信号監視
+    bool checkForRegisteredSignal();
+    
     // 状態確認
     bool isSignalRegistered() const { return savedSignal.isRegistered; }
     IRSignal getRegisteredSignal() const { return savedSignal; }

@@ -218,6 +218,49 @@ bool IRController::sendRegisteredSignal() {
     return true;
 }
 
+bool IRController::checkForRegisteredSignal() {
+    // 登録済み信号がない場合は監視しない
+    if (!savedSignal.isRegistered) {
+        return false;
+    }
+    
+    // 赤外線信号を受信した場合
+    if (irrecv.decode(&results)) {
+        unsigned long currentTime = millis();
+        
+        // リピート信号は無視
+        if (results.repeat) {
+            irrecv.resume();
+            return false;
+        }
+        
+        // 短時間内の連続信号を無視（リピート対策）
+        if (isRepeatSignal(currentTime)) {
+            irrecv.resume();
+            return false;
+        }
+        
+        // 受信信号が登録済み信号と一致するかチェック
+        bool isMatching = (results.decode_type == savedSignal.protocol &&
+                          results.value == savedSignal.value &&
+                          results.bits == savedSignal.bits);
+        
+        if (isMatching) {
+            lastSignalTime = currentTime;
+            Serial.printf("REGISTERED_SIGNAL_DETECTED: Protocol=%s, Value=0x%llX, Bits=%d\n",
+                         typeToString(results.decode_type).c_str(), 
+                         results.value, 
+                         results.bits);
+            irrecv.resume();
+            return true;
+        }
+        
+        irrecv.resume();
+    }
+    
+    return false;
+}
+
 void IRController::printSignalDetails(const decode_results& result) {
     Serial.printf("Protocol: %s, Value: 0x%llX, Bits: %d, Repeat: %s\n", 
                   typeToString(result.decode_type).c_str(), 

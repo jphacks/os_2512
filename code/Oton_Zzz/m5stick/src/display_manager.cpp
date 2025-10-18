@@ -32,6 +32,7 @@ void DisplayManager::showSendMode(bool hasSignal, const IRSignal& signal) {
     M5.Lcd.println();
     M5.Lcd.println("A: Send signal");
     M5.Lcd.println("B: Register mode");
+    M5.Lcd.println("Serial: TV_OFF cmd");
     M5.Lcd.println();
     
     if (hasSignal) {
