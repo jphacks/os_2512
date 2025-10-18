@@ -25,18 +25,12 @@ public:
     void showImage(uint16_t* img);
     
     // メッセージ表示
-    void showMessage(const String& message, int duration = 2000);
-    void showSendingMessage();
-    void showSignalReceivedMessage(int count, const IRSignal& signal);
-    void showUnsupportedProtocolMessage();
-    void showNoSignalMessage();
-    void showSignalSentMessage();
+    void showMessage(const String& message, int duration = 2000, uint16_t color = WHITE);
     
     // 進捗表示
     void showRegisterProgress(int current, int total);
     
-    // エラーメッセージ
-    void showErrorMessage(const String& error);
+
     
     // 詳細情報表示
     void showSignalDetails(const IRSignal& signal);

@@ -50,67 +50,27 @@ void DisplayManager::showRegisterMode(int registerCount) {
     showRegisterProgress(registerCount, REGISTRATION_ATTEMPTS);
 }
 
-void DisplayManager::showMessage(const String& message, int duration) {
+void DisplayManager::showMessage(const String& message, int duration, uint16_t color) {
     clearScreen();
     M5.Lcd.setCursor(0, 0);
     setDefaultTextProperties();
-    M5.Lcd.println(message);
+    M5.Lcd.setTextColor(color);
+    
+    // エラーメッセージの場合は"ERROR:"プレフィックスを追加
+    if (message.startsWith("ERROR:")) {
+        M5.Lcd.println("ERROR:");
+        M5.Lcd.println(message.substring(7)); // "ERROR: "を除いた部分を表示
+    } else {
+        M5.Lcd.println(message);
+    }
+    
+    M5.Lcd.setTextColor(WHITE); // 色をリセット
     if (duration > 0) {
         delay(duration);
     }
 }
 
-void DisplayManager::showSendingMessage() {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
-    M5.Lcd.println("Sending signal...");
-}
 
-void DisplayManager::showSignalReceivedMessage(int count, const IRSignal& signal) {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
-    
-    M5.Lcd.println("=== REGISTER MODE ===");
-    M5.Lcd.println();
-    M5.Lcd.printf("Signal %d/%d received!\n", count, REGISTRATION_ATTEMPTS);
-    M5.Lcd.printf("Protocol: %s\n", typeToString(signal.protocol).c_str());
-    M5.Lcd.printf("Bits: %d\n", signal.bits);
-    M5.Lcd.println();
-    if (count < REGISTRATION_ATTEMPTS) {
-        M5.Lcd.println("Wait for next signal...");
-    }
-}
-
-void DisplayManager::showUnsupportedProtocolMessage() {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
-    
-    M5.Lcd.println("UNKNOWN protocol!");
-    M5.Lcd.println();
-    M5.Lcd.println("Supported brands:");
-    M5.Lcd.println("Sony, Panasonic,");
-    M5.Lcd.println("Sharp, Mitsubishi,");
-    M5.Lcd.println("JVC, Samsung, LG");
-}
-
-void DisplayManager::showNoSignalMessage() {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
-    M5.Lcd.println("No signal registered!");
-}
-
-void DisplayManager::showSignalSentMessage() {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
-    M5.Lcd.setTextColor(GREEN);
-    M5.Lcd.println("Signal sent!");
-    M5.Lcd.setTextColor(WHITE);
-}
 
 void DisplayManager::showRegisterProgress(int current, int total) {
     M5.Lcd.setCursor(0, M5.Lcd.getCursorY() + 10);
@@ -126,14 +86,7 @@ void DisplayManager::showRegisterProgress(int current, int total) {
     M5.Lcd.setTextColor(WHITE);
 }
 
-void DisplayManager::showErrorMessage(const String& error) {
-    clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    M5.Lcd.setTextColor(RED);
-    M5.Lcd.println("ERROR:");
-    M5.Lcd.println(error);
-    M5.Lcd.setTextColor(WHITE);
-}
+
 
 void DisplayManager::showSignalDetails(const IRSignal& signal) {
     clearScreen();

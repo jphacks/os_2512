@@ -20,6 +20,8 @@ void updateDisplay();
 void handleSendSignal();
 void handleRegisterMode();
 void toggleMode();
+void toggleTVstatus();
+void setOtonStatus(Oton status);
 void handleSerialCommand();
 void handleSendModeMonitoring();
 
@@ -70,23 +72,26 @@ void updateDisplay() {
 }
 
 void handleSendSignal() {
+  if(currentTVstatus == TV_OFF) {
+    Serial.println("TV is already OFF");
+    return;
+  }
   if (irController.sendRegisteredSignal()) {
-    displayManager.showSignalSentMessage();
-    delay(1000);
+    displayManager.showMessage("Signal sent!", 1000, GREEN);
   } else {
     if (!irController.isSignalRegistered()) {
-      displayManager.showNoSignalMessage();
-      delay(2000);
+      displayManager.showMessage("No signal registered!", 2000, RED);
     } else {
-      displayManager.showErrorMessage("Unsupported protocol!");
-      delay(2000);
+      displayManager.showMessage("ERROR: Unsupported protocol!", 2000, RED);
     }
   }
   updateDisplay();
 }
 
 void handleRegisterMode() {
+  int previousRegisterCount = irController.getRegisterCount();
   bool registrationComplete = irController.handleRegisterMode();
+  int currentRegisterCount = irController.getRegisterCount();
   
   if (registrationComplete) {
     Serial.println("Registration completed successfully!");
@@ -94,6 +99,8 @@ void handleRegisterMode() {
     updateDisplay();
   } else if (irController.isRegistrationTimeout()) {
     updateDisplay();  // IRController内でリセット済み
+  } else if (previousRegisterCount != currentRegisterCount) {
+    updateDisplay();
   }
 }
 
@@ -105,14 +112,9 @@ void handleSerialCommand() {
   command.trim();  // 前後の空白や改行を削除
   Serial.printf("Received command: '%s'\n", command.c_str());
   if (command == "OFF") {
-    if (currentTVstatus == TV_OFF) {
-      Serial.println("TV is already OFF");
-      return;
-    }
     Serial.println("OFF command received - sending IR signal");
     handleSendSignal();
     toggleTVstatus();
-    Serial.println("TV turned OFF");
   } else if (command == "ALERT") {
     Serial.println("ALERT command received - sending IR signal");
     setOtonStatus(SLEEP);
