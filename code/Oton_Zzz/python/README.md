@@ -9,3 +9,7 @@ Python 3.12.3
 
 (.venv)> pip install -r requirements.txt
 ```
+
+# リンク
+MediaPipe 顔ランドマーク検出ガイド
+https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker?hl=ja
