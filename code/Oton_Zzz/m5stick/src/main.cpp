@@ -72,10 +72,6 @@ void updateDisplay() {
 }
 
 void handleSendSignal() {
-  if(currentTVstatus == TV_OFF) {
-    Serial.println("TV is already OFF");
-    return;
-  }
   if (irController.sendRegisteredSignal()) {
     displayManager.showMessage("Signal sent!", 1000, GREEN);
   } else {
@@ -113,6 +109,10 @@ void handleSerialCommand() {
   Serial.printf("Received command: '%s'\n", command.c_str());
   if (command == "OFF") {
     Serial.println("OFF command received - sending IR signal");
+    if (currentTVstatus == TV_OFF) {
+      Serial.println("TV is already OFF");
+    return;
+  }
     handleSendSignal();
     toggleTVstatus();
   } else if (command == "ALERT") {
