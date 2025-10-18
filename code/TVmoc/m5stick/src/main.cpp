@@ -91,18 +91,18 @@ public:
 // ★★★ PANASONICプロトコルのボタン定義 ★★★
 IRButton panasonicButtons[] = {
   IRButton("TV_POWER", 0x555AF148688B, 0x00),
-  IRButton("TV_1",     0x555AF148724C, 0x00),
-  IRButton("TV_2",     0x555AF148F244, 0x00),
-  IRButton("TV_3",     0x555AF1480A43, 0x00),
-  IRButton("TV_4",     0x555AF1488A4B, 0x00),
-  IRButton("TV_5",     0x555AF1484A47, 0x00),
-  IRButton("TV_6",     0x555AF148CA4F, 0x00),
-  IRButton("TV_7",     0x555AF1482A41, 0x00),
-  IRButton("TV_8",     0x555AF148AA49, 0x00),
-  IRButton("TV_9",     0x555AF1486A45, 0x00),
-  IRButton("TV_10",    0x555AF148EA4D, 0x00),
-  IRButton("TV_11",    0x555AF1481A42, 0x00),
-  IRButton("TV_12",    0x555AF1489A4A, 0x00)
+  IRButton("CH_1",     0x555AF148724C, 0x00),
+  IRButton("CH_2",     0x555AF148F244, 0x00),
+  IRButton("CH_3",     0x555AF1480A43, 0x00),
+  IRButton("CH_4",     0x555AF1488A4B, 0x00),
+  IRButton("CH_5",     0x555AF1484A47, 0x00),
+  IRButton("CH_6",     0x555AF148CA4F, 0x00),
+  IRButton("CH_7",     0x555AF1482A41, 0x00),
+  IRButton("CH_8",     0x555AF148AA49, 0x00),
+  IRButton("CH_9",     0x555AF1486A45, 0x00),
+  IRButton("CH_10",    0x555AF148EA4D, 0x00),
+  IRButton("CH_11",    0x555AF1481A42, 0x00),
+  IRButton("CH_12",    0x555AF1489A4A, 0x00)
 };
 
 // PANASONICプロトコルオブジェクト
