@@ -5,7 +5,11 @@
 
 > テレビをつけたまま寝てしまうオトンを救う、AI睡眠検知システム
 
-## 📱 製品概要
+## 🔧 使用技術
+
+
+
+## � 製品概要
 
 ### 💡 背景（製品開発のきっかけ、課題等）
 
@@ -66,6 +70,7 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 - **📚 学習機能の実装**: 個人の睡眠パターンを学習し、より精度の高い判定を実現
 - **👥 複数人対応**: 家族全員を同時に監視し、全員が寝た時だけテレビを消すなどの細かい制御
 - **📱 スマホアプリ開発**: 電気代削減効果の可視化や、設定のカスタマイズが可能なモバイルアプリ
+- **💰 お手軽価格での実装**: 専用の高価なセンサーや機器を必要とせず、一般家庭でも手軽に導入できる価格帯を実現。ESP32マイコン(約500円)、IRモジュール(約300円)、Webカメラ(約2,000円)、その他部品(約700円)の合計約3,500円で実装可能。既存の高価な睡眠モニタリングシステム(数万円〜)と比較して大幅なコスト削減を実現
 
 ### 💪 注力したこと（こだわり等）
 
@@ -75,7 +80,17 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 
 ## 🛠️ 開発技術
 
-### 💻 活用した技術
+### 💻 技術スタック一覧
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
+  <img src="https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white" alt="C++"/>
+  <img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV"/>
+  <img src="https://img.shields.io/badge/MediaPipe-0097A7?style=for-the-badge&logo=google&logoColor=white" alt="MediaPipe"/>
+  <img src="https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white" alt="Arduino"/>
+  <img src="https://img.shields.io/badge/PlatformIO-FF7F00?style=for-the-badge&logo=platformio&logoColor=white" alt="PlatformIO"/>
+  <img src="https://img.shields.io/badge/M5Stack-0D1117?style=for-the-badge&logo=espressif&logoColor=white" alt="M5Stack"/>
+</p>
 
 #### 🔌 API・データ
 
@@ -99,7 +114,7 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 * **Webカメラ**: 対象者の顔を撮影
 * **PC** (2台, Windows): 睡眠検知処理とテレビ擬似環境
 * **赤外線送受信モジュール**: テレビ制御用の赤外線通信
-* **Panasonic製リモコン**: テレビ操作のリファレンス信号取得
+* **リモコン**: テレビ操作のリファレンス信号取得
 
 ### 🌟 独自技術
 
@@ -119,62 +134,6 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 * **テレビ擬似環境システム**: 動画の切り替えによってテレビのON/OFFを演出する、デモに最適化された擬似環境
   - 実装ファイル: [`code/TVmoc/python/main.py`](code/TVmoc/python/main.py)
 
-## 🔧 セットアップ方法
-
-### 📋 必要な環境
-
-- Python 3.8以上
-- PlatformIO (M5Stick開発用)
-- Windows PC 2台
-- M5StickC Plus2 2台
-- Webカメラ
-
-### 📥 インストール手順
-
-1. **📂 リポジトリのクローン**
-   ```bash
-   git clone https://github.com/jphacks/os_2512.git
-   cd os_2512
-   ```
-
-2. **🐍 Pythonパッケージのインストール**
-   ```bash
-   # Oton-Zzz (検出PC)
-   cd code/Oton_Zzz/python
-   pip install -r requirements.txt
-
-   # TVmoc (テレビPC)
-   cd ../../TVmoc/python
-   pip install -r requirements.txt
-   ```
-
-3. **⚡ M5Stickのファームウェア書き込み**
-   - PlatformIOでそれぞれのM5Stickにプログラムを書き込みます
-   ```bash
-   # Oton-Zzz用M5Stick
-   cd code/Oton_Zzz/m5stick
-   pio run -t upload
-
-   # TVmoc用M5Stick
-   cd ../../TVmoc/m5stick
-   pio run -t upload
-   ```
-
-### 🚀 使用方法
-
-1. **📺 テレビPC側の起動**
-   ```bash
-   cd code/TVmoc/python
-   python main.py
-   ```
-
-2. **👁️ 検出PC側の起動**
-   ```bash
-   cd code/Oton_Zzz/python
-   python main.py
-   ```
-
-3. **😴 カメラに向かって座り、目を閉じて5分待つとテレビが自動的にオフになります**
 
 ## 📁 プロジェクト構成
 
@@ -192,11 +151,3 @@ os_2512/
 ├── 仕様書.md             # 詳細仕様書
 └── README.md             # このファイル
 ```
-
-## 📄 ライセンス
-
-このプロジェクトのライセンスについては [LICENSE](LICENSE) ファイルをご確認ください。
-
-## 📮 お問い合わせ
-
-プロジェクトに関するご質問やフィードバックは、GitHubのIssuesからお願いします。
