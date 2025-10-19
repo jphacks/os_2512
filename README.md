@@ -47,7 +47,7 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 
 ![](https://github.com/user-attachments/assets/bf1aec8e-384a-4b9f-a085-624f29c4ce31)
 
-## 🎬 デモ動画
+## 🎬 プロモーション動画
 
 [![デモ動画](https://img.youtube.com/vi/lA9EluZugD8/0.jpg)](https://www.youtube.com/watch?v=lA9EluZugD8)
 
