@@ -36,18 +36,19 @@ void DisplayManager::showRegisterMode(int registerCount) {
     setDefaultTextProperties();
     
     M5.Lcd.println("=== REGISTER MODE ===");
-    M5.Lcd.println();
-    M5.Lcd.printf("Waiting: %d/%d signals\n", registerCount, REGISTRATION_ATTEMPTS);
-    M5.Lcd.println();
-    M5.Lcd.println("Send same signal");
-    M5.Lcd.printf("%d times...\n", REGISTRATION_ATTEMPTS);
-    M5.Lcd.println();
-    M5.Lcd.println("Japanese TV brands");
-    M5.Lcd.println("supported!");
-    M5.Lcd.println("B: Exit register mode");
-    
     // 進捗表示
-    showRegisterProgress(registerCount, REGISTRATION_ATTEMPTS);
+    M5.Lcd.setCursor(0, M5.Lcd.getCursorY() + 10);
+    M5.Lcd.setTextSize(5);
+    for (int i = 0; i < REGISTRATION_ATTEMPTS; i++) {
+        if (i < registerCount) {
+            M5.Lcd.setTextColor(GREEN);
+            M5.Lcd.print("O ");
+        } else {
+            M5.Lcd.setTextColor(DARKGREY);
+            M5.Lcd.print("- ");
+        }
+    }
+    M5.Lcd.setTextColor(WHITE);
 }
 
 void DisplayManager::showMessage(const String& message, int duration, uint16_t color) {
@@ -69,24 +70,6 @@ void DisplayManager::showMessage(const String& message, int duration, uint16_t c
         delay(duration);
     }
 }
-
-
-
-void DisplayManager::showRegisterProgress(int current, int total) {
-    M5.Lcd.setCursor(0, M5.Lcd.getCursorY() + 10);
-    for (int i = 0; i < total; i++) {
-        if (i < current) {
-            M5.Lcd.setTextColor(GREEN);
-            M5.Lcd.print("O ");
-        } else {
-            M5.Lcd.setTextColor(DARKGREY);
-            M5.Lcd.print("- ");
-        }
-    }
-    M5.Lcd.setTextColor(WHITE);
-}
-
-
 
 void DisplayManager::showSignalDetails(const IRSignal& signal) {
     clearScreen();

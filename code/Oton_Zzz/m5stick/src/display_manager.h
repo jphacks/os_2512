@@ -27,11 +27,6 @@ public:
     // メッセージ表示
     void showMessage(const String& message, int duration = 2000, uint16_t color = WHITE);
     
-    // 進捗表示
-    void showRegisterProgress(int current, int total);
-    
-
-    
     // 詳細情報表示
     void showSignalDetails(const IRSignal& signal);
     void showSupportedBrands();
