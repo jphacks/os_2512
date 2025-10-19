@@ -4,7 +4,7 @@ import time
 # ==== 設定 ====
 PORT = "COM6"       # デバイスマネージャーで確認
 BAUD = 115200       # M5Stack側と一致させる
-TIMEOUT = 1
+TIMEOUT = 0
 # ===============
 
 class Serialize_controler:
