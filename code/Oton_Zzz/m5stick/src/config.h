@@ -21,6 +21,11 @@ const unsigned long SELF_RECEIVE_IGNORE_TIME = 3000;  // 自己受信を防ぐ�
 const int REGISTRATION_ATTEMPTS = 3;  // 登録に必要な受信回数
 const uint16_t MIN_SIGNAL_BITS = 20;  // 最小有効ビット数
 
+// 登録モードの戻り値定数
+const int REGISTER_SUCCESS = 1;    // 登録成功
+const int REGISTER_FAILED = 0;     // 登録失敗
+const int REGISTER_IN_PROGRESS = -1; // 登録途中
+
 // プログラムの状態
 enum Mode {
   SEND_MODE,      // 送信モード（デフォルト）

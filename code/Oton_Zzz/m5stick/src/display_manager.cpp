@@ -32,12 +32,15 @@ void DisplayManager::showImage(uint16_t* img) {
 
 void DisplayManager::showRegisterMode(int registerCount) {
     clearScreen();
-    M5.Lcd.setCursor(0, 0);
-    setDefaultTextProperties();
     
+    // タイトルを中央に配置
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(WHITE);
+    M5.Lcd.setCursor((240 - strlen("=== REGISTER MODE ===") * 12) / 2, 20);
     M5.Lcd.println("=== REGISTER MODE ===");
-    // 進捗表示
-    M5.Lcd.setCursor(0, M5.Lcd.getCursorY() + 10);
+    
+    // 進捗表示を中央に配置
+    M5.Lcd.setCursor((240 - REGISTRATION_ATTEMPTS * 60) / 2, 135 / 2);
     M5.Lcd.setTextSize(5);
     for (int i = 0; i < REGISTRATION_ATTEMPTS; i++) {
         if (i < registerCount) {
@@ -48,7 +51,23 @@ void DisplayManager::showRegisterMode(int registerCount) {
             M5.Lcd.print("- ");
         }
     }
-    M5.Lcd.setTextColor(WHITE);
+}
+
+void DisplayManager::showFieldRegistration() {
+    clearScreen();
+    
+    // タイトルを中央に配置
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setTextColor(RED);
+    M5.Lcd.setCursor((240 - strlen("=== REGISTER MODE ===") * 12) / 2, 20);
+    M5.Lcd.println("=== REGISTER MODE ===");
+    
+    // 進捗表示を中央に配置
+    M5.Lcd.setCursor((240 - REGISTRATION_ATTEMPTS * 60) / 2, 135 / 2);
+    M5.Lcd.setTextSize(5);
+    for (int i = 0; i < REGISTRATION_ATTEMPTS; i++) {
+        M5.Lcd.print("* ");
+    }
 }
 
 void DisplayManager::showMessage(const String& message, int duration, uint16_t color) {

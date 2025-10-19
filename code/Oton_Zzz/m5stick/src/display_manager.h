@@ -20,6 +20,7 @@ public:
     // モード別画面表示
     void showSendMode(bool hasSignal, const IRSignal& signal);
     void showRegisterMode(int registerCount);
+    void showFieldRegistration();
 
     // 画像表示
     void showImage(uint16_t* img);

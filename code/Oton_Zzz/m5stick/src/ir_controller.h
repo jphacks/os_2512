@@ -33,7 +33,7 @@ public:
     void begin();
     
     // 信号登録関連
-    bool handleRegisterMode();
+    int handleRegisterMode();
     void resetRegistration();
     int getRegisterCount() const { return registerCount; }
     bool isRegistrationTimeout() const;

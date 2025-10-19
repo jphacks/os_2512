@@ -11,7 +11,7 @@ DisplayManager displayManager;
 ButtonHandler buttonHandler;
 
 // プログラムの状態
-Mode currentMode = SEND_MODE;
+Mode currentMode = REGISTER_MODE;
 TVstatus currentTVstatus = TV_OFF;
 Oton currentOtonStatus = AWAKE;
 unsigned long lastSendTime = 0;  // 最後に信号を送信した時刻
@@ -88,17 +88,23 @@ void handleSendSignal() {
 
 void handleRegisterMode() {
   int previousRegisterCount = irController.getRegisterCount();
-  bool registrationComplete = irController.handleRegisterMode();
+  int registrationResult = irController.handleRegisterMode();
   int currentRegisterCount = irController.getRegisterCount();
   
-  if (registrationComplete) {
+  if (registrationResult == REGISTER_SUCCESS) {
     Serial.println("Registration completed successfully!");
     currentMode = SEND_MODE;
     updateDisplay();
-  } else if (irController.isRegistrationTimeout()) {
+  } else if (registrationResult == REGISTER_FAILED) {
+    Serial.println("Registration failed - back to waiting for signals");
+    displayManager.showFieldRegistration();
+    delay(1000);
     updateDisplay();  // IRController内でリセット済み
-  } else if (previousRegisterCount != currentRegisterCount) {
-    updateDisplay();
+  } else if (registrationResult == REGISTER_IN_PROGRESS) {
+    // 登録進行中の場合、カウントが変更されたら表示を更新
+    if (previousRegisterCount != currentRegisterCount) {
+      updateDisplay();
+    }
   }
 }
 

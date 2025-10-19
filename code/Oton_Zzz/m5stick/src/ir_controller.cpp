@@ -98,12 +98,12 @@ bool IRController::isRepeatSignal(unsigned long currentTime) {
     return (currentTime - lastSignalTime < REPEAT_IGNORE_TIME);
 }
 
-bool IRController::handleRegisterMode() {
+int IRController::handleRegisterMode() {
     // タイムアウトチェック
     if (isRegistrationTimeout()) {
         Serial.println("Register timeout - resetting...");
         resetRegistration();
-        return false;
+        return REGISTER_FAILED;
     }
     
     // 赤外線信号を受信した場合
@@ -115,13 +115,13 @@ bool IRController::handleRegisterMode() {
             Serial.printf("Signal too soon after last one (%lu ms) - ignoring repeat\n", 
                           currentTime - lastSignalTime);
             irrecv.resume();
-            return false;
+            return REGISTER_IN_PROGRESS;
         }
         
         // 信号の有効性チェック
         if (!isValidSignal(results)) {
             irrecv.resume();
-            return false;
+            return REGISTER_IN_PROGRESS;
         }
         
         lastReceiveTime = currentTime;
@@ -138,17 +138,18 @@ bool IRController::handleRegisterMode() {
         if (registerCount >= REGISTRATION_ATTEMPTS) {
             if (verifyAndRegisterSignal()) {
                 Serial.println("Signal successfully registered!");
-                return true;  // 登録完了
+                return REGISTER_SUCCESS;  // 登録完了
             } else {
                 Serial.println("Signals don't match - resetting...");
                 resetRegistration();
+                return REGISTER_FAILED;
             }
         }
         
         irrecv.resume();
     }
     
-    return false;  // まだ登録中
+    return REGISTER_IN_PROGRESS;  // まだ登録中
 }
 
 void IRController::resetRegistration() {
