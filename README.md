@@ -1,9 +1,11 @@
 # 😴💤 Oton-Zzz
 
-![IMAGE ALT TEXT HERE](https://github.com/user-attachments/assets/b37cd706-0cfb-4f80-8dd5-6354e5a18b4a)
-
-
 > テレビをつけたまま寝てしまうオトンを救う、AI睡眠検知システム
+
+## 🎬 プロモーション動画
+
+[![プロモーション動画](https://github.com/user-attachments/assets/b37cd706-0cfb-4f80-8dd5-6354e5a18b4a)](https://www.youtube.com/watch?v=lA9EluZugD8)
+
 
 ## 🔧 使用技術
 
@@ -49,8 +51,12 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 
 ## 🎬 プロモーション動画
 
-![](https://drive.google.com/file/d/1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_/view)
-[![侍エンジニアブログ](C:UsersSiroDesktopsamurai_blog.png)](https://www.sejuku.net/blog/)
+<div align="center">
+  <a href="https://drive.google.com/file/d/1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_/view">
+    <img src="https://drive.google.com/thumbnail?id=1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_&sz=w1000" alt="プロモーション動画" width="80%">
+  </a>
+  <p>▶️ <strong><a href="https://drive.google.com/file/d/1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_/view">クリックしてプロモーション動画を視聴</a></strong></p>
+</div>
 
 システムの動作デモをご覧いただけます。実際の睡眠検知からテレビ消灯までの一連の流れを確認できます。
 
