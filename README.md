@@ -1,6 +1,6 @@
 # 😴💤 Oton-Zzz
 
-[![プロモーション動画](https://github.com/user-attachments/assets/b37cd706-0cfb-4f80-8dd5-6354e5a18b4a)](https://www.youtube.com/watch?v=lA9EluZugD8)
+![プロモーション動画](https://github.com/user-attachments/assets/b37cd706-0cfb-4f80-8dd5-6354e5a18b4a)
 
 > テレビをつけたまま寝てしまうオトンを救う、AI睡眠検知システム
 ## 製品概要
