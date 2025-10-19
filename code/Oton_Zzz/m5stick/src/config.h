@@ -17,6 +17,7 @@ const uint16_t RECV_PIN = 33;
 // タイミング設定
 const unsigned long RECEIVE_TIMEOUT = 10000;  // 10秒のタイムアウト
 const unsigned long REPEAT_IGNORE_TIME = 500;  // リピート信号を無視する時間（0.5秒）
+const unsigned long SELF_RECEIVE_IGNORE_TIME = 3000;  // 自己受信を防ぐ遅延時間（3秒）
 const int REGISTRATION_ATTEMPTS = 3;  // 登録に必要な受信回数
 const uint16_t MIN_SIGNAL_BITS = 20;  // 最小有効ビット数
 

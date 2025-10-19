@@ -14,6 +14,7 @@ ButtonHandler buttonHandler;
 Mode currentMode = SEND_MODE;
 TVstatus currentTVstatus = TV_OFF;
 Oton currentOtonStatus = AWAKE;
+unsigned long lastSendTime = 0;  // 最後に信号を送信した時刻
 
 // 関数の前方宣言
 void updateDisplay();
@@ -73,7 +74,8 @@ void updateDisplay() {
 
 void handleSendSignal() {
   if (irController.sendRegisteredSignal()) {
-    displayManager.showMessage("Signal sent!", 1000, GREEN);
+    lastSendTime = millis();  // 送信時刻を記録
+    // displayManager.showMessage("Signal sent!", 1000, GREEN);
   } else {
     if (!irController.isSignalRegistered()) {
       displayManager.showMessage("No signal registered!", 2000, RED);
@@ -115,11 +117,12 @@ void handleSerialCommand() {
   }
     handleSendSignal();
     toggleTVstatus();
+    delay(1000);
   } else if (command == "ALERT") {
-    Serial.println("ALERT command received - sending IR signal");
+    Serial.println("ALERT command received");
     setOtonStatus(SLEEP);
   } else if(command == "AWAKE") {
-    Serial.println("AWAKE command received - sending IR signal");
+    Serial.println("AWAKE command received");
     setOtonStatus(AWAKE);
 
   } else {
@@ -129,6 +132,11 @@ void handleSerialCommand() {
 }
 
 void handleSendModeMonitoring() {
+  // 送信後一定時間は受信を無視（自己受信防止）
+  if (millis() - lastSendTime < SELF_RECEIVE_IGNORE_TIME) {
+    return;
+  }
+  
   // 送信モード時に登録済み信号を監視
   if (irController.checkForRegisteredSignal()) {
     // 登録済み信号を受信した場合の処理

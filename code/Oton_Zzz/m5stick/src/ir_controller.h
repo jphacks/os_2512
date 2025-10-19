@@ -16,6 +16,7 @@ private:
     int registerCount;
     unsigned long lastReceiveTime;
     unsigned long lastSignalTime;
+    unsigned long lastSendTime;
     
     // プライベートメソッド
     void saveReceivedSignal(int index, decode_results* result);
@@ -42,6 +43,9 @@ public:
     
     // 送信モード時の信号監視
     bool checkForRegisteredSignal();
+    
+    // 受信バッファのクリア
+    void clearReceiveBuffer();
     
     // 状態確認
     bool isSignalRegistered() const { return savedSignal.isRegistered; }

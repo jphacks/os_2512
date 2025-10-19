@@ -5,7 +5,8 @@ IRController::IRController() :
     irrecv(RECV_PIN),
     registerCount(0),
     lastReceiveTime(0),
-    lastSignalTime(0) {
+    lastSignalTime(0),
+    lastSendTime(0) {
 }
 
 IRController::~IRController() {
@@ -169,6 +170,10 @@ bool IRController::sendRegisteredSignal() {
     
     Serial.println("Sending registered signal...");
     
+    // 送信前に受信バッファをクリアして確実に自己受信を防ぐ
+    clearReceiveBuffer();
+    Serial.println("Receive buffer cleared before transmission");
+    
     // 既知のプロトコルのみ送信対応
     if (savedSignal.protocol != UNKNOWN && savedSignal.bits > 0) {
         Serial.printf("Sending known protocol: %s, Value: 0x%llX, Bits: %d\n", 
@@ -215,12 +220,31 @@ bool IRController::sendRegisteredSignal() {
     }
     
     Serial.println("Signal sent!");
+    lastSendTime = millis();  // 送信時刻を記録
+    
+    // 送信後に少し待機してからバッファをクリア
+    delay(100);  // 送信完了を確実にするため
+    clearReceiveBuffer();
+    Serial.println("Receive buffer cleared after transmission");
+    
     return true;
 }
 
 bool IRController::checkForRegisteredSignal() {
     // 登録済み信号がない場合は監視しない
     if (!savedSignal.isRegistered) {
+        return false;
+    }
+    
+    // 送信後一定時間は自己受信を防ぐため監視しない
+    unsigned long timeSinceSend = millis() - lastSendTime;
+    if (timeSinceSend < SELF_RECEIVE_IGNORE_TIME) {
+        // デバッグログ（頻繁すぎる場合は削除）
+        static unsigned long lastLogTime = 0;
+        if (millis() - lastLogTime > 1000) {  // 1秒に1回のみログ出力
+            Serial.printf("Self-receive protection active: %lu ms since last send\n", timeSinceSend);
+            lastLogTime = millis();
+        }
         return false;
     }
     
@@ -259,6 +283,13 @@ bool IRController::checkForRegisteredSignal() {
     }
     
     return false;
+}
+
+void IRController::clearReceiveBuffer() {
+    // IRrecvの内部バッファをクリアする
+    irrecv.disableIRIn();   // 受信を無効化してバッファをクリア
+    delay(10);              // 少し待機
+    irrecv.enableIRIn();    // 受信を再有効化
 }
 
 void IRController::printSignalDetails(const decode_results& result) {
