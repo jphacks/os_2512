@@ -1,7 +1,7 @@
 # 😴💤 Oton-Zzz
 
-[![IMAGE ALT TEXT HERE](https://github.com/user-attachments/assets/b37cd706-0cfb-4f80-8dd5-6354e5a18b4a)
-](https://www.youtube.com/watch?v=lA9EluZugD8)
+![IMAGE ALT TEXT HERE](https://github.com/user-attachments/assets/b37cd706-0cfb-4f80-8dd5-6354e5a18b4a)
+
 
 > テレビをつけたまま寝てしまうオトンを救う、AI睡眠検知システム
 
@@ -45,8 +45,7 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 
 ## システム構成図
 
-<img width="2040" height="1696" alt="image(1)" src="https://github.com/user-attachments/assets/bf1aec8e-384a-4b9f-a085-624f29c4ce31" />
-
+![](https://github.com/user-attachments/assets/bf1aec8e-384a-4b9f-a085-624f29c4ce31)
 
 ## 🎬 デモ動画
 
@@ -70,7 +69,7 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 - **👥 複数人対応**: 家族全員を同時に監視し、全員が寝た時だけテレビを消すなどの細かい制御
 - **📱 スマホアプリ開発**: 電気代削減効果の可視化や、設定のカスタマイズが可能なモバイルアプリ
 - **💰 お手軽価格での実装**: 専用の高価なセンサーや機器を必要とせず、一般家庭でも手軽に導入できる価格帯を実現。ESP32マイコン(約500円)、IRモジュール(約300円)、Webカメラ(約2,000円)、その他部品(約700円)の合計約3,500円で実装可能。既存の高価な睡眠モニタリングシステム(数万円〜)と比較して大幅なコスト削減を実現
-<img width="2120" height="1692" alt="image" src="https://github.com/user-attachments/assets/c8c0e667-2751-49a4-ab44-5c6cbe5d5b60" />
+![](https://github.com/user-attachments/assets/c8c0e667-2751-49a4-ab44-5c6cbe5d5b60)
 
 ### 💪 注力したこと（こだわり等）
 
