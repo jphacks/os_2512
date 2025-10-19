@@ -43,10 +43,10 @@ M5StickとIRモジュールを使用した赤外線制御により、既存の�
 ## 🎬 プロモーション動画
 
 <div align="center">
-  <a href="https://drive.google.com/file/d/1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_/view">
-    <img src="https://drive.google.com/thumbnail?id=1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_&sz=w1000" alt="プロモーション動画" width="80%">
+  <a href="https://drive.google.com/file/d/1kfLbLEKwR0IuErjxzK2JeWiFcaL2Vf-A/view?usp=sharing">
+    <img src="https://drive.google.com/thumbnail?id=1kfLbLEKwR0IuErjxzK2JeWiFcaL2Vf-A&sz=w1000" alt="プロモーション動画" width="80%">
   </a>
-  <p>▶️ <strong><a href="https://drive.google.com/file/d/1xRXXR6jVDLaO27iEBBgH2699ZKevk0L_/view">クリックしてプロモーション動画を視聴</a></strong></p>
+  <p>▶️ <strong><a href="https://drive.google.com/file/d/1kfLbLEKwR0IuErjxzK2JeWiFcaL2Vf-A/view?usp=sharing">クリックしてプロモーション動画を視聴</a></strong></p>
 </div>
 
 システムの動作デモをご覧いただけます。実際の睡眠検知からテレビ消灯までの一連の流れを確認できます。
